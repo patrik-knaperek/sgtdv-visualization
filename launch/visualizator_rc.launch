@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="visualizator" type="visualizator" name="visualizator" output="screen"/>
+    <node pkg="rviz" type="rviz" name="visualizator_rviz"  respawn="false"
+        args="-d $(find visualizator)/rviz/visualizator.rviz" output="screen">
+    </node>
+    
+</launch>
