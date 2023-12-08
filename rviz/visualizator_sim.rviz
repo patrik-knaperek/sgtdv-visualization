@@ -7,7 +7,8 @@ Panels:
         - /Global Options1
         - /Camera Detections1/Namespaces1
         - /Lidar Detections1/Namespaces1
-      Splitter Ratio: 0.8805555701255798
+        - /Trajectory1
+      Splitter Ratio: 0.5833333134651184
     Tree Height: 704
   - Class: rviz/Selection
     Name: Selection
@@ -155,7 +156,7 @@ Visualization Manager:
       Marker Topic: /camera_cones/marker
       Name: Camera Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -163,7 +164,7 @@ Visualization Manager:
       Marker Topic: /lidar_cones/marker
       Name: Lidar Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -171,7 +172,7 @@ Visualization Manager:
       Marker Topic: /fusion_cones/marker
       Name: Fused Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -179,7 +180,7 @@ Visualization Manager:
       Marker Topic: /slam/map/marker
       Name: SLAM Map
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -195,12 +196,7 @@ Visualization Manager:
       Marker Topic: /pathplanning/visualize/interpolated_cones
       Name: Path boundaries
       Namespaces:
-        end: true
-        left_cones: true
-        left_interpolated: true
-        right_cones: true
-        right_interpolated: true
-        start: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -208,7 +204,7 @@ Visualization Manager:
       Marker Topic: /pathplanning_trajectory/marker
       Name: Trajectory
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -235,9 +231,7 @@ Visualization Manager:
       Marker Topic: /pathtracking/visualize/target
       Name: Pathtracking target
       Namespaces:
-        closest point: true
-        rear wheels: true
-        target point: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -268,7 +262,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 66.14635467529297
+      Distance: 86.17859649658203
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -276,17 +270,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.2548401653766632
-        Y: -44.31990432739258
-        Z: -1.8653349876403809
+        X: 0.026370875537395477
+        Y: -55.723663330078125
+        Z: -2.29339861869812
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1453981399536133
+      Pitch: 1.5153977870941162
       Target Frame: <Fixed Frame>
-      Yaw: 3.1949374675750732
+      Yaw: 3.3699474334716797
     Saved: ~
 Window Geometry:
   Displays:

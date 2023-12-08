@@ -13,7 +13,7 @@ Visualizator::Visualizator(ros::NodeHandle& handle)
 	fusion_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("fusion_cones/marker",1);
 	pose_publisher_ = handle.advertise<visualization_msgs::Marker>("slam/pose/marker", 1);
 	map_publisher_ = handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1);
-	trajectory_publisher_ = handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1);
+	trajectory_publisher_ = handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1, true);
 	command_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("pathtracking_commands/marker", 1);
 	
 	camera_subscriber_ = handle.subscribe("camera_cones", 1, &Visualizator::cameraCallback, this);
@@ -375,7 +375,7 @@ void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& ms
 	trajectory_marker.points.clear();
 	trajectory_marker.points.reserve(msg->points.size());
 
-	trajectory_marker.type = visualization_msgs::Marker::LINE_STRIP;
+	trajectory_marker.type = visualization_msgs::Marker::POINTS;
 	trajectory_marker.header.frame_id = "map";
 	trajectory_marker.scale.x = 0.2;
 	trajectory_marker.scale.y = 0.2;
