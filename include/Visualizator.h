@@ -7,6 +7,7 @@
 
 #include <ros/ros.h>
 #include <visualization_msgs/MarkerArray.h>
+#include <geometry_msgs/PolygonStamped.h>
 #include <sgtdv_msgs/ConeStampedArr.h>
 #include <sgtdv_msgs/Point2DStampedArr.h>
 #include <sgtdv_msgs/FusionMsg.h>
@@ -29,16 +30,18 @@ class Visualizator
 		void trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg);
 		void commandCallback(const sgtdv_msgs::Control::ConstPtr& msg);
 
-		void initCommandMarkers(const ros::NodeHandle& handle);
-		void deleteMarkers(visualization_msgs::MarkerArray& marker_rray,
-											const ros::Publisher& publisher) const;
-
 	public:
 		static constexpr double THROTLE_MARKER_BASE[2] = {-1.0, 1.5};
 		static constexpr double THROTTLE_GAIN = 1 / 50.0;
 		static constexpr double STEER_MARKER_BASE[2] = {2.0, 0.0};
 		static constexpr double STEER_GAIN = 2;
 	private:
+		void initCommandMarkers(const ros::NodeHandle& handle);
+		void deleteMarkers(visualization_msgs::MarkerArray& marker_rray,
+						const ros::Publisher& publisher) const;
+		void initFOV(const ros::NodeHandle& handle);
+		void publishFOV();
+
 		ros::Publisher camera_publisher_;
 		ros::Publisher lidar_publisher_;
 		ros::Publisher fusion_publisher_;
@@ -46,6 +49,8 @@ class Visualizator
 		ros::Publisher map_publisher_;
 		ros::Publisher trajectory_publisher_;
 		ros::Publisher command_publisher_;
+		ros::Publisher camera_fov_publisher_;
+		ros::Publisher lidar_fov_publisher_;
 
 		ros::Subscriber camera_subscriber_;
 		ros::Subscriber lidar_subscriber_;
@@ -57,4 +62,5 @@ class Visualizator
 
 		visualization_msgs::Marker steering_marker_, throtle_marker_;
 		visualization_msgs::MarkerArray command_marker_;
+		geometry_msgs::PolygonStamped camera_fov_marker_, lidar_fov_marker_;
 };

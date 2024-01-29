@@ -15,6 +15,8 @@ Visualizator::Visualizator(ros::NodeHandle& handle)
 	map_publisher_ = handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1);
 	trajectory_publisher_ = handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1, true);
 	command_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("pathtracking_commands/marker", 1);
+	camera_fov_publisher_ = handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true);
+	lidar_fov_publisher_ = handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true);
 	
 	camera_subscriber_ = handle.subscribe("camera_cones", 1, &Visualizator::cameraCallback, this);
 	lidar_subscriber_ = handle.subscribe("lidar_cones", 1, &Visualizator::lidarCallback, this);
@@ -25,6 +27,7 @@ Visualizator::Visualizator(ros::NodeHandle& handle)
 	command_subscriber_ = handle.subscribe("pathtracking_commands", 1, &Visualizator::commandCallback, this);
 
 	initCommandMarkers(handle);
+	initFOV(handle);
 }
 
 void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
@@ -125,6 +128,61 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	command_marker_.markers.push_back(steer_marker);
 
 	command_publisher_.publish(command_marker_);
+}
+
+void Visualizator::initFOV(const ros::NodeHandle& handle)
+{
+	float camera_x_min, camera_x_max, camera_bear_min, camera_bear_max;
+	float lidar_x_min, lidar_x_max, lidar_y_min, lidar_y_max;
+
+	Utils::loadParam(handle, "camera/x_min", 0.f, &camera_x_min);
+	Utils::loadParam(handle, "camera/x_max", 0.f, &camera_x_max);
+	Utils::loadParam(handle, "camera/bearing_min", 0.f, &camera_bear_min);
+	Utils::loadParam(handle, "camera/bearing_max", 0.f, &camera_bear_max);
+	Utils::loadParam(handle, "lidar/x_min", 0.f, &lidar_x_min);
+	Utils::loadParam(handle, "lidar/x_max", 0.f, &lidar_x_max);
+	Utils::loadParam(handle, "lidar/y_min", 0.f, &lidar_y_min);
+	Utils::loadParam(handle, "lidar/y_max", 0.f, &lidar_y_max);
+
+	camera_fov_marker_.header.frame_id = "camera_center";
+	
+	geometry_msgs::Point32 point;
+	point.x = camera_x_min;
+	point.y = camera_x_min * std::tan(camera_bear_max);
+	point.z = 0.;
+	camera_fov_marker_.polygon.points.push_back(point);
+	point.x = camera_x_max;
+	point.y = camera_x_max * std::tan(camera_bear_max);
+	camera_fov_marker_.polygon.points.push_back(point);
+	point.x = camera_x_max;
+	point.y = camera_x_max * std::tan(camera_bear_min);
+	camera_fov_marker_.polygon.points.push_back(point);
+	point.x = camera_x_min;
+	point.y = camera_x_min * std::tan(camera_bear_min);
+	camera_fov_marker_.polygon.points.push_back(point);
+
+	lidar_fov_marker_.header.frame_id = "lidar";
+
+	point.x = lidar_x_min;
+	point.y = lidar_y_min;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_min;
+	point.y = lidar_y_max;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_max;
+	point.y = lidar_y_max;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_max;
+	point.y = lidar_y_min;
+	lidar_fov_marker_.polygon.points.push_back(point);
+}
+
+void Visualizator::publishFOV(void)
+{
+	camera_fov_marker_.header.stamp = ros::Time();
+	lidar_fov_marker_.header.stamp = ros::Time();
+	camera_fov_publisher_.publish(camera_fov_marker_);
+	lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
 void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
@@ -317,6 +375,8 @@ void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
 		carPoseMarker.points.push_back(pointCarPose);
 		pose_publisher_.publish(carPoseMarker);
 	}
+
+	publishFOV();
 }
 
 void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
