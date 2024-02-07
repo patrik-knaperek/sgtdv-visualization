@@ -134,6 +134,7 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 {
 	float camera_x_min, camera_x_max, camera_bear_min, camera_bear_max;
 	float lidar_x_min, lidar_x_max, lidar_y_min, lidar_y_max;
+	std::string camera_frame_id, lidar_frame_id;
 
 	Utils::loadParam(handle, "camera/x_min", 0.f, &camera_x_min);
 	Utils::loadParam(handle, "camera/x_max", 0.f, &camera_x_max);
@@ -143,8 +144,10 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 	Utils::loadParam(handle, "lidar/x_max", 0.f, &lidar_x_max);
 	Utils::loadParam(handle, "lidar/y_min", 0.f, &lidar_y_min);
 	Utils::loadParam(handle, "lidar/y_max", 0.f, &lidar_y_max);
+	Utils::loadParam(handle, "camera/frame_id", std::string("camera_center"), &camera_frame_id);
+	Utils::loadParam(handle, "lidar/frame_id", std::string("lidar"), &lidar_frame_id);
 
-	camera_fov_marker_.header.frame_id = "camera_center";
+	camera_fov_marker_.header.frame_id = camera_frame_id;
 	
 	geometry_msgs::Point32 point;
 	point.x = camera_x_min;
@@ -161,7 +164,7 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 	point.y = camera_x_min * std::tan(camera_bear_min);
 	camera_fov_marker_.polygon.points.push_back(point);
 
-	lidar_fov_marker_.header.frame_id = "lidar";
+	lidar_fov_marker_.header.frame_id = lidar_frame_id;
 
 	point.x = lidar_x_min;
 	point.y = lidar_y_min;

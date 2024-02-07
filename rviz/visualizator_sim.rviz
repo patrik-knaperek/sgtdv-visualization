@@ -8,6 +8,8 @@ Panels:
         - /Camera Detections1/Namespaces1
         - /Lidar Detections1/Namespaces1
         - /Trajectory1
+        - /Lidar FOV1
+        - /Camera FOV1
       Splitter Ratio: 0.5833333134651184
     Tree Height: 704
   - Class: rviz/Selection
@@ -93,6 +95,10 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        camera_center_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         chassis:
           Alpha: 1
           Show Axes: false
@@ -156,7 +162,7 @@ Visualization Manager:
       Marker Topic: /camera_cones/marker
       Name: Camera Detections
       Namespaces:
-        {}
+        "": true
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -164,7 +170,7 @@ Visualization Manager:
       Marker Topic: /lidar_cones/marker
       Name: Lidar Detections
       Namespaces:
-        {}
+        "": true
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -172,7 +178,7 @@ Visualization Manager:
       Marker Topic: /fusion_cones/marker
       Name: Fused Detections
       Namespaces:
-        {}
+        "": true
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -180,7 +186,7 @@ Visualization Manager:
       Marker Topic: /slam/map/marker
       Name: SLAM Map
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -220,10 +226,7 @@ Visualization Manager:
       Marker Topic: /pathtracking_commands/marker
       Name: Control Cmd
       Namespaces:
-        steering cmd: true
-        steering range: true
-        throtle cmd: true
-        throtle range: true
+        {}
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -233,6 +236,24 @@ Visualization Manager:
       Namespaces:
         {}
       Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 255; 0; 0
+      Enabled: true
+      Name: Lidar FOV
+      Queue Size: 10
+      Topic: /lidar/fov_visualize
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 0; 0; 255
+      Enabled: true
+      Name: Camera FOV
+      Queue Size: 10
+      Topic: /camera/fov_visualize
+      Unreliable: false
       Value: true
   Enabled: true
   Global Options:
@@ -262,7 +283,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 86.17859649658203
+      Distance: 23.935897827148438
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -270,9 +291,9 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0.026370875537395477
-        Y: -55.723663330078125
-        Z: -2.29339861869812
+        X: 3.8101823329925537
+        Y: -3.788390636444092
+        Z: -1.437043309211731
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -298,5 +319,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1920
-  X: 2560
+  X: 640
   Y: 0
