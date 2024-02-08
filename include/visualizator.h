@@ -3,11 +3,17 @@
 //Authors: Patrik Knaperek
 /*****************************************************/
 
+#pragma once
+
+/* C++ */
 #include <vector>
 
+/* ROS */
 #include <ros/ros.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <geometry_msgs/PolygonStamped.h>
+
+/* SGT */
 #include <sgtdv_msgs/ConeStampedArr.h>
 #include <sgtdv_msgs/Point2DStampedArr.h>
 #include <sgtdv_msgs/FusionMsg.h>
