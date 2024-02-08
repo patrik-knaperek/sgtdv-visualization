@@ -5,28 +5,26 @@
 
 #include "../include/visualizator.h"
 
-Visualizator::Visualizator(ros::NodeHandle& handle)
+Visualizator::Visualizator(ros::NodeHandle& handle) :
+  /* ROS interface init */
+  camera_publisher_(handle.advertise<visualization_msgs::MarkerArray>("camera_cones/marker", 1)),
+  lidar_publisher_(handle.advertise<visualization_msgs::MarkerArray>("lidar_cones/marker",1)),
+  fusion_publisher_(handle.advertise<visualization_msgs::MarkerArray>("fusion_cones/marker",1)),
+  pose_publisher_(handle.advertise<visualization_msgs::Marker>("slam/pose/marker", 1)),
+  map_publisher_(handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1)),
+  trajectory_publisher_(handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1, true)),
+  command_publisher_(handle.advertise<visualization_msgs::MarkerArray>("pathtracking_commands/marker", 1)),
+  camera_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true)),
+  lidar_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true)),
+
+  camera_subscriber_(handle.subscribe("camera_cones", 1, &Visualizator::cameraCallback, this)),
+  lidar_subscriber_(handle.subscribe("lidar_cones", 1, &Visualizator::lidarCallback, this)),
+  fusion_subscriber_(handle.subscribe("fusion_cones", 1, &Visualizator::fusionCallback, this)),
+  pose_subscriber_(handle.subscribe("slam/pose", 1, &Visualizator::poseCallback, this)),
+  map_subscriber_(handle.subscribe("slam/map", 1, &Visualizator::mapCallback, this)),
+  trajectory_subscriber_(handle.subscribe("pathplanning_trajectory", 1, &Visualizator::trajectoryCallback, this)),
+  command_subscriber_(handle.subscribe("pathtracking_commands", 1, &Visualizator::commandCallback, this))
 {
-	/* ROS interface init */
-
-	camera_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("camera_cones/marker",1);
-	lidar_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("lidar_cones/marker",1);
-	fusion_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("fusion_cones/marker",1);
-	pose_publisher_ = handle.advertise<visualization_msgs::Marker>("slam/pose/marker", 1);
-	map_publisher_ = handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1);
-	trajectory_publisher_ = handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1, true);
-	command_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("pathtracking_commands/marker", 1);
-	camera_fov_publisher_ = handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true);
-	lidar_fov_publisher_ = handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true);
-	
-	camera_subscriber_ = handle.subscribe("camera_cones", 1, &Visualizator::cameraCallback, this);
-	lidar_subscriber_ = handle.subscribe("lidar_cones", 1, &Visualizator::lidarCallback, this);
-	fusion_subscriber_ = handle.subscribe("fusion_cones", 1, &Visualizator::fusionCallback, this);
-	pose_subscriber_ = handle.subscribe("slam/pose", 1, &Visualizator::poseCallback, this);
-	map_subscriber_ = handle.subscribe("slam/map", 1, &Visualizator::mapCallback, this);
-	trajectory_subscriber_ = handle.subscribe("pathplanning_trajectory", 1, &Visualizator::trajectoryCallback, this);
-	command_subscriber_ = handle.subscribe("pathtracking_commands", 1, &Visualizator::commandCallback, this);
-
 	initCameraMarker();
 	initLidarMarker();
 	initFusionMarker();
