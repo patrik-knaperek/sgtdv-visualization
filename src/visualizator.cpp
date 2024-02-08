@@ -33,36 +33,58 @@ Visualizator::Visualizator(ros::NodeHandle& handle)
 void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 {
 	double steer_min, steer_max;
-	int throtle_min, throtle_max;
+	int throttle_min, throttle_max;
 	std::string base_frame_id;
 	Utils::loadParam(handle, "/controller/steering/min", -1.0, &steer_min);
 	Utils::loadParam(handle, "/controller/steering/max", 1.0, &steer_max);
-	Utils::loadParam(handle, "/controller/speed/min", 0, &throtle_min);
-	Utils::loadParam(handle, "/controller/speed/max", 0, &throtle_max);
+	Utils::loadParam(handle, "/controller/speed/min", 0, &throttle_min);
+	Utils::loadParam(handle, "/controller/speed/max", 0, &throttle_max);
 	Utils::loadParam(handle, "/base_frame_id", std::string("base_link"), &base_frame_id);
 
 	geometry_msgs::Point point;
 	
+	/* Init throttle command marker parameters */
 
-	visualization_msgs::Marker throtle_range_marker;
-	throtle_range_marker.header.frame_id = base_frame_id;
-	throtle_range_marker.type = visualization_msgs::Marker::LINE_STRIP;
-	throtle_range_marker.action = visualization_msgs::Marker::ADD;
-	throtle_range_marker.id = 0;
-	throtle_range_marker.ns = "throtle range";
-	throtle_range_marker.color.r = 1.0;
-	throtle_range_marker.color.a = 0.2;
-	throtle_range_marker.scale.x = 0.15;
-	throtle_range_marker.scale.y = 0.1;
-	throtle_range_marker.scale.z = 0.1;
-	throtle_range_marker.pose.orientation.w = 1;
-	throtle_range_marker.pose.position.z = 0.2;
+	visualization_msgs::Marker throttle_range_marker;
+	throttle_range_marker.header.frame_id = base_frame_id;
+	throttle_range_marker.type = visualization_msgs::Marker::LINE_STRIP;
+	throttle_range_marker.action = visualization_msgs::Marker::ADD;
+	throttle_range_marker.id = 0;
+	throttle_range_marker.ns = "throttle range";
+	throttle_range_marker.color.r = 1.0;
+	throttle_range_marker.color.a = 0.2;
+	throttle_range_marker.scale.x = 0.15;
+	throttle_range_marker.scale.y = 0.1;
+	throttle_range_marker.scale.z = 0.1;
+	throttle_range_marker.pose.orientation.w = 1;
+	throttle_range_marker.pose.position.z = 0.2;
 	
-	point.x = THROTLE_MARKER_BASE[0] + throtle_min * THROTTLE_GAIN;
-	point.y = THROTLE_MARKER_BASE[1];
-	throtle_range_marker.points.push_back(point);
-	point.x = THROTLE_MARKER_BASE[0] + throtle_max * THROTTLE_GAIN;
-	throtle_range_marker.points.push_back(point);
+	point.x = THROTTLE_MARKER_BASE[0] + throttle_min * THROTTLE_GAIN;
+	point.y = THROTTLE_MARKER_BASE[1];
+	throttle_range_marker.points.push_back(point);
+	point.x = THROTTLE_MARKER_BASE[0] + throttle_max * THROTTLE_GAIN;
+	throttle_range_marker.points.push_back(point);
+
+	visualization_msgs::Marker throttle_marker;
+	throttle_marker.header.frame_id = base_frame_id;
+	throttle_marker.type = visualization_msgs::Marker::LINE_STRIP;
+	throttle_marker.action = visualization_msgs::Marker::ADD;
+	throttle_marker.id = 2;
+	throttle_marker.ns = "throttle cmd";
+	throttle_marker.color.g = 1.0;
+	throttle_marker.color.a = 1.0;
+	throttle_marker.scale.x = 0.15;
+	throttle_marker.scale.y = 0.1;
+	throttle_marker.scale.z = 0.1;
+	throttle_marker.pose.orientation.w = 1;
+	throttle_marker.pose.position.z = 0.25;
+	
+	point.x = THROTTLE_MARKER_BASE[0];
+	point.y = THROTTLE_MARKER_BASE[1];
+	throttle_marker.points.push_back(point);
+	throttle_marker.points.push_back(point);
+	
+	/* Init steering command marker parameters */
 	
 	visualization_msgs::Marker steer_range_marker;
 	steer_range_marker.header.frame_id = base_frame_id;
@@ -84,25 +106,6 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	point.y = STEER_MARKER_BASE[1] + steer_max * STEER_GAIN;
 	steer_range_marker.points.push_back(point);
 
-	visualization_msgs::Marker throtle_marker;
-	throtle_marker.header.frame_id = base_frame_id;
-	throtle_marker.type = visualization_msgs::Marker::LINE_STRIP;
-	throtle_marker.action = visualization_msgs::Marker::ADD;
-	throtle_marker.id = 2;
-	throtle_marker.ns = "throtle cmd";
-	throtle_marker.color.g = 1.0;
-	throtle_marker.color.a = 1.0;
-	throtle_marker.scale.x = 0.15;
-	throtle_marker.scale.y = 0.1;
-	throtle_marker.scale.z = 0.1;
-	throtle_marker.pose.orientation.w = 1;
-	throtle_marker.pose.position.z = 0.25;
-	
-	point.x = THROTLE_MARKER_BASE[0];
-	point.y = THROTLE_MARKER_BASE[1];
-	throtle_marker.points.push_back(point);
-	throtle_marker.points.push_back(point);
-
 	visualization_msgs::Marker steer_marker;
 	steer_marker.header.frame_id = base_frame_id;
 	steer_marker.type = visualization_msgs::Marker::LINE_STRIP;
@@ -122,10 +125,10 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	steer_marker.points.push_back(point);
 	steer_marker.points.push_back(point);
 
-	command_marker_.markers.push_back(throtle_range_marker);
-	command_marker_.markers.push_back(steer_range_marker);
-	command_marker_.markers.push_back(throtle_marker);
-	command_marker_.markers.push_back(steer_marker);
+	command_markers_.markers.emplace_back(throttle_range_marker);
+	command_markers_.markers.emplace_back(steer_range_marker);
+	command_markers_.markers.emplace_back(throttle_marker);
+	command_markers_.markers.emplace_back(steer_marker);
 
 	command_publisher_.publish(command_marker_);
 }

@@ -37,7 +37,7 @@ class Visualizator
 		void commandCallback(const sgtdv_msgs::Control::ConstPtr& msg);
 
 	public:
-		static constexpr double THROTLE_MARKER_BASE[2] = {-1.0, 1.5};
+		static constexpr double THROTTLE_MARKER_BASE[2] = {-1.0, 1.5};
 		static constexpr double THROTTLE_GAIN = 1 / 50.0;
 		static constexpr double STEER_MARKER_BASE[2] = {2.0, 0.0};
 		static constexpr double STEER_GAIN = 2;
