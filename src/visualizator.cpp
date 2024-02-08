@@ -148,6 +148,7 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 	Utils::loadParam(handle, "lidar/frame_id", std::string("lidar"), &lidar_frame_id);
 
 	camera_fov_marker_.header.frame_id = camera_frame_id;
+	camera_fov_marker_.header.stamp = ros::Time();
 	
 	geometry_msgs::Point32 point;
 	point.x = camera_x_min;
@@ -165,30 +166,23 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 	camera_fov_marker_.polygon.points.push_back(point);
 
 	lidar_fov_marker_.header.frame_id = lidar_frame_id;
-
-	point.x = lidar_x_min;
-	point.y = lidar_y_min;
-	lidar_fov_marker_.polygon.points.push_back(point);
-	point.x = lidar_x_min;
-	point.y = lidar_y_max;
-	lidar_fov_marker_.polygon.points.push_back(point);
-	point.x = lidar_x_max;
-	point.y = lidar_y_max;
-	lidar_fov_marker_.polygon.points.push_back(point);
-	point.x = lidar_x_max;
-	point.y = lidar_y_min;
-	lidar_fov_marker_.polygon.points.push_back(point);
-}
-
-void Visualizator::publishFOV(void)
-{
-	camera_fov_marker_.header.stamp = ros::Time();
 	lidar_fov_marker_.header.stamp = ros::Time();
-	camera_fov_publisher_.publish(camera_fov_marker_);
-	lidar_fov_publisher_.publish(lidar_fov_marker_);
+
+	point.x = lidar_x_min;
+	point.y = lidar_y_min;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_min;
+	point.y = lidar_y_max;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_max;
+	point.y = lidar_y_max;
+	lidar_fov_marker_.polygon.points.push_back(point);
+	point.x = lidar_x_max;
+	point.y = lidar_y_min;
+	lidar_fov_marker_.polygon.points.push_back(point);
 }
 
-void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
+void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const
 {
 	static visualization_msgs::MarkerArray cameraMarkers;
 	deleteMarkers(cameraMarkers, camera_publisher_);
@@ -255,7 +249,7 @@ void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &ms
 	camera_publisher_.publish(cameraMarkers);  
 }
 
-void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg)
+void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg) const
 {
 	static visualization_msgs::MarkerArray lidarMarkers;
 	deleteMarkers(lidarMarkers, lidar_publisher_);
@@ -291,7 +285,7 @@ void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &
 	lidar_publisher_.publish(lidarMarkers); 
 }
 
-void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
+void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const
 {
 	static visualization_msgs::MarkerArray fusionMarkers;
 	deleteMarkers(fusionMarkers, fusion_publisher_);
@@ -354,7 +348,7 @@ void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &ms
 	fusion_publisher_.publish(fusionMarkers);
 }
 
-void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
+void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg) const
 {
 	static visualization_msgs::Marker carPoseMarker;
 	geometry_msgs::Point pointCarPose;
@@ -379,10 +373,12 @@ void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
 		pose_publisher_.publish(carPoseMarker);
 	}
 
-	publishFOV();
+	/* publish FOV */
+	camera_fov_publisher_.publish(camera_fov_marker_);
+	lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
-void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
+void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg) const
 {
 	static sgtdv_msgs::ConeArr coneArr;
 	coneArr.cones.clear();
@@ -432,7 +428,7 @@ void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
 	map_publisher_.publish(coneMarker); 
 }
 
-void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg)
+void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg) const
 {
 	static visualization_msgs::Marker trajectory_marker;
 	trajectory_marker.points.clear();
@@ -460,9 +456,9 @@ void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& ms
 
 void Visualizator::commandCallback(const sgtdv_msgs::Control::ConstPtr& msg)
 {
-	command_marker_.markers[2].points[1].x = THROTLE_MARKER_BASE[0] + msg->speed * THROTTLE_GAIN;;
-	command_marker_.markers[3].points[1].y = STEER_MARKER_BASE[1] + msg->steeringAngle * STEER_GAIN;
-	command_publisher_.publish(command_marker_);
+	command_markers_.markers[2].points[1].x = THROTTLE_MARKER_BASE[0] + msg->speed * THROTTLE_GAIN;;
+	command_markers_.markers[3].points[1].y = STEER_MARKER_BASE[1] + msg->steeringAngle * STEER_GAIN;
+	command_publisher_.publish(command_markers_);
 }
 
 void Visualizator::deleteMarkers(visualization_msgs::MarkerArray& marker_array,
