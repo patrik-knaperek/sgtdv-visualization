@@ -8,6 +8,7 @@
 Visualizator::Visualizator(ros::NodeHandle& handle)
 {
 	/* ROS interface init */
+
 	camera_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("camera_cones/marker",1);
 	lidar_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("lidar_cones/marker",1);
 	fusion_publisher_ = handle.advertise<visualization_msgs::MarkerArray>("fusion_cones/marker",1);
@@ -26,12 +27,91 @@ Visualizator::Visualizator(ros::NodeHandle& handle)
 	trajectory_subscriber_ = handle.subscribe("pathplanning_trajectory", 1, &Visualizator::trajectoryCallback, this);
 	command_subscriber_ = handle.subscribe("pathtracking_commands", 1, &Visualizator::commandCallback, this);
 
+	initCameraMarker();
+	initLidarMarker();
+	initFusionMarker();
+	initPoseMarker();
+	initMapMarker();
+	initTrajectoryMarker();
 	initCommandMarkers(handle);
 	initFOV(handle);
 }
 
+void Visualizator::initCameraMarker(void)
+{
+	camera_marker_.type = visualization_msgs::Marker::SPHERE;
+	camera_marker_.action = visualization_msgs::Marker::ADD;
+	camera_marker_.lifetime = ros::Duration(0.5);
+	camera_marker_.pose.orientation.w = 1.0;
+	camera_marker_.scale.x = 0.1;
+	camera_marker_.scale.y = 0.1;
+	camera_marker_.scale.z = 0.1;
+	camera_marker_.color.a = 0.6;
+}
+
+void Visualizator::initLidarMarker(void)
+{
+		
+	lidar_marker_.type = visualization_msgs::Marker::CYLINDER;
+	lidar_marker_.action = visualization_msgs::Marker::ADD;
+	lidar_marker_.lifetime = ros::Duration(0.5);
+	lidar_marker_.pose.orientation.w = 1.0;
+	lidar_marker_.scale.x = 0.1;
+	lidar_marker_.scale.y = 0.1;
+	lidar_marker_.scale.z = 0.1;
+	lidar_marker_.color.a = 0.7;
+	lidar_marker_.color.r = 1.0;
+}
+
+void Visualizator::initFusionMarker(void)
+{
+	fusion_marker_.type = visualization_msgs::Marker::CUBE;
+	fusion_marker_.action = visualization_msgs::Marker::ADD;
+	fusion_marker_.lifetime = ros::Duration(0.5);
+	fusion_marker_.pose.orientation.w = 1.0;
+	fusion_marker_.scale.x = 0.1;
+	fusion_marker_.scale.y = 0.1;
+	fusion_marker_.scale.z = 0.1;
+	fusion_marker_.color.a = 1.0;
+}
+
+void Visualizator::initPoseMarker(void)
+{
+	pose_marker_.header.frame_id =  "map";
+	pose_marker_.header.stamp = ros::Time();
+	pose_marker_.type = visualization_msgs::Marker::POINTS;
+	pose_marker_.action = visualization_msgs::Marker::ADD;
+	pose_marker_.lifetime = ros::Duration(0);
+	pose_marker_.scale.x = 0.3;
+	pose_marker_.scale.y = 0.3;
+	pose_marker_.color.a = 1;
+	pose_marker_.color.r = 1;
+}
+
+void Visualizator::initMapMarker(void)
+{
+	map_marker_.header.frame_id = "map";
+	map_marker_.type = visualization_msgs::Marker::POINTS;
+	map_marker_.action = visualization_msgs::Marker::ADD;
+	map_marker_.scale.x = 0.2;
+	map_marker_.scale.y = 0.2;
+}
+
+void Visualizator::initTrajectoryMarker(void)
+{
+	trajectory_marker_.type = visualization_msgs::Marker::POINTS;
+	trajectory_marker_.header.frame_id = "map";
+	trajectory_marker_.scale.x = 0.2;
+	trajectory_marker_.scale.y = 0.2;
+	trajectory_marker_.color.r = 1.0f;
+	trajectory_marker_.color.a = 1.0;
+	trajectory_marker_.pose.orientation.w = 1.0;
+}
+
 void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 {
+	/* Load command parameters from server */
+	
 	double steer_min, steer_max;
 	int throttle_min, throttle_max;
 	std::string base_frame_id;
@@ -46,6 +126,7 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	/* Init throttle command marker parameters */
 
 	visualization_msgs::Marker throttle_range_marker;
+	throttle_range_marker.points.reserve(2);
 	throttle_range_marker.header.frame_id = base_frame_id;
 	throttle_range_marker.type = visualization_msgs::Marker::LINE_STRIP;
 	throttle_range_marker.action = visualization_msgs::Marker::ADD;
@@ -66,6 +147,7 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	throttle_range_marker.points.push_back(point);
 
 	visualization_msgs::Marker throttle_marker;
+	throttle_marker.points.reserve(2);
 	throttle_marker.header.frame_id = base_frame_id;
 	throttle_marker.type = visualization_msgs::Marker::LINE_STRIP;
 	throttle_marker.action = visualization_msgs::Marker::ADD;
@@ -87,6 +169,7 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	/* Init steering command marker parameters */
 	
 	visualization_msgs::Marker steer_range_marker;
+	steer_range_marker.points.reserve(2);
 	steer_range_marker.header.frame_id = base_frame_id;
 	steer_range_marker.type = visualization_msgs::Marker::LINE_STRIP;
 	steer_range_marker.action = visualization_msgs::Marker::ADD;
@@ -107,6 +190,7 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	steer_range_marker.points.push_back(point);
 
 	visualization_msgs::Marker steer_marker;
+	steer_marker.points.reserve(2);
 	steer_marker.header.frame_id = base_frame_id;
 	steer_marker.type = visualization_msgs::Marker::LINE_STRIP;
 	steer_marker.action = visualization_msgs::Marker::ADD;
@@ -125,16 +209,19 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
 	steer_marker.points.push_back(point);
 	steer_marker.points.push_back(point);
 
+	command_markers_.markers.reserve(4);
 	command_markers_.markers.emplace_back(throttle_range_marker);
 	command_markers_.markers.emplace_back(steer_range_marker);
 	command_markers_.markers.emplace_back(throttle_marker);
 	command_markers_.markers.emplace_back(steer_marker);
 
-	command_publisher_.publish(command_marker_);
+	command_publisher_.publish(command_markers_);
 }
 
 void Visualizator::initFOV(const ros::NodeHandle& handle)
 {
+	/* Load FOV dimensioins from parameter server */
+	
 	float camera_x_min, camera_x_max, camera_bear_min, camera_bear_max;
 	float lidar_x_min, lidar_x_max, lidar_y_min, lidar_y_max;
 	std::string camera_frame_id, lidar_frame_id;
@@ -150,152 +237,131 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
 	Utils::loadParam(handle, "camera/frame_id", std::string("camera_center"), &camera_frame_id);
 	Utils::loadParam(handle, "lidar/frame_id", std::string("lidar"), &lidar_frame_id);
 
+	
+	geometry_msgs::Point32 point;
+	
+	/* Init camera FOV marker parameters */
+	
+	camera_fov_marker_.polygon.points.reserve(4);
 	camera_fov_marker_.header.frame_id = camera_frame_id;
 	camera_fov_marker_.header.stamp = ros::Time();
 	
-	geometry_msgs::Point32 point;
 	point.x = camera_x_min;
 	point.y = camera_x_min * std::tan(camera_bear_max);
-	point.z = 0.;
 	camera_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = camera_x_max;
 	point.y = camera_x_max * std::tan(camera_bear_max);
 	camera_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = camera_x_max;
 	point.y = camera_x_max * std::tan(camera_bear_min);
 	camera_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = camera_x_min;
 	point.y = camera_x_min * std::tan(camera_bear_min);
 	camera_fov_marker_.polygon.points.push_back(point);
 
+	/* Init lidar FOV marker parameters */
+	
+	lidar_fov_marker_.polygon.points.reserve(4);
 	lidar_fov_marker_.header.frame_id = lidar_frame_id;
 	lidar_fov_marker_.header.stamp = ros::Time();
 
 	point.x = lidar_x_min;
 	point.y = lidar_y_min;
 	lidar_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = lidar_x_min;
 	point.y = lidar_y_max;
 	lidar_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = lidar_x_max;
 	point.y = lidar_y_max;
 	lidar_fov_marker_.polygon.points.push_back(point);
+	
 	point.x = lidar_x_max;
 	point.y = lidar_y_min;
 	lidar_fov_marker_.polygon.points.push_back(point);
 }
 
-void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const
+void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
 {
 	static visualization_msgs::MarkerArray cameraMarkers;
 	deleteMarkers(cameraMarkers, camera_publisher_);
 	cameraMarkers.markers.reserve(msg->cones.size());
 	
 	int i = 0;
-	for(const auto& cone : msg->cones)
+	for (const auto& cone : msg->cones)
 	{
 		if (std::isnan(cone.coords.x) || std::isnan(cone.coords.y))
 			continue;
-		
-		visualization_msgs::Marker marker;
-		
-		marker.header = cone.coords.header;
-		marker.type = marker.SPHERE;
-		marker.action = marker.ADD;
-		marker.id = i++;
-		marker.lifetime = ros::Duration(0.5);
-		marker.pose.position.x = cone.coords.x;
-		marker.pose.position.y = cone.coords.y;
-		marker.pose.position.z = 0;
-		marker.pose.orientation.x = 0.0;
-		marker.pose.orientation.y = 0.0;
-		marker.pose.orientation.z = 0.0;
-		marker.pose.orientation.w = 1.0;
-		marker.scale.x = 0.1;
-		marker.scale.y = 0.1;
-		marker.scale.z = 0.1;
-	   
-		marker.color.a = 0.6;
+				
+		camera_marker_.header = cone.coords.header;
+		camera_marker_.id = i++;
+		camera_marker_.pose.position.x = cone.coords.x;
+		camera_marker_.pose.position.y = cone.coords.y;
 		
 		if (cone.color == 'b') // blue cone
 		{		  
-			marker.color.r = 0.0;
-			marker.color.g = 0.0;
-			marker.color.b = 1.0;
+			camera_marker_.color.r = 0.0;
+			camera_marker_.color.g = 0.0;
+			camera_marker_.color.b = 1.0;
 		}
 		else if (cone.color == 'y') // yellow cone
 		{		  
-			marker.color.r = 1.0;
-			marker.color.g = 1.0;
-			marker.color.b = 0.0;
+			camera_marker_.color.r = 1.0;
+			camera_marker_.color.g = 1.0;
+			camera_marker_.color.b = 0.0;
 		}
 		else if (cone.color == 's') // orange cone small
 		{		  
-			marker.color.r = 1.0;
-			marker.color.g = 0.5;
-			marker.color.b = 0.0;
+			camera_marker_.color.r = 1.0;
+			camera_marker_.color.g = 0.5;
+			camera_marker_.color.b = 0.0;
 		}
 		else if (msg->cones[i].color == 'g') // orange cone big
 		{
-			marker.color.r = 1.0;
-			marker.color.g = 0.3;
-			marker.color.b = 0.0;
+			camera_marker_.color.r = 1.0;
+			camera_marker_.color.g = 0.3;
+			camera_marker_.color.b = 0.0;
 		}
 		else
 		{
-			marker.color.r = marker.color.g = marker.color.b = 0;
+			camera_marker_.color.r = camera_marker_.color.g = camera_marker_.color.b = 0;
 		}
 		
-		cameraMarkers.markers.push_back(marker);
+		cameraMarkers.markers.emplace_back(camera_marker_);
 	}
 	
 	camera_publisher_.publish(cameraMarkers);  
 }
 
-void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg) const
+void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg)
 {
 	static visualization_msgs::MarkerArray lidarMarkers;
 	deleteMarkers(lidarMarkers, lidar_publisher_);
 	lidarMarkers.markers.reserve(msg->points.size());
-	visualization_msgs::Marker marker;
 	
 	int i = 0;
 	for (const auto& point : msg->points)
-	{
-		marker.header = point.header;
-		marker.type = marker.CYLINDER;
-		marker.action = marker.ADD;
-		marker.id = i++;
-		marker.lifetime = ros::Duration(0.5);
-		marker.pose.position.x = point.x;
-		marker.pose.position.y = point.y;
-		marker.pose.position.z = 0.0;
-		marker.pose.orientation.x = 0.0;
-		marker.pose.orientation.y = 0.0;
-		marker.pose.orientation.z = 0.0;
-		marker.pose.orientation.w = 1.0;
-		marker.scale.x = 0.1;
-		marker.scale.y = 0.1;
-		marker.scale.z = 0.1;
-		marker.color.a = 0.7;
-		marker.color.r = 1.0;
-		marker.color.g = 0.0;
-		marker.color.b = 0.0;
+	{		
+		lidar_marker_.header = point.header;
+		lidar_marker_.id = i++;
+		lidar_marker_.pose.position.x = point.x;
+		lidar_marker_.pose.position.y = point.y;
 		
-		lidarMarkers.markers.push_back(marker);
+		lidarMarkers.markers.emplace_back(lidar_marker_);
 	}
 
 	lidar_publisher_.publish(lidarMarkers); 
 }
 
-void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const
+void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
 {
 	static visualization_msgs::MarkerArray fusionMarkers;
 	deleteMarkers(fusionMarkers, fusion_publisher_);
 	fusionMarkers.markers.reserve(msg->cones.size());
-	
-	visualization_msgs::Marker marker;
-	
 	
 	int i = 0;
 	for(const auto& cone : msg->cones)
@@ -303,77 +369,56 @@ void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &ms
 		if (std::isnan(cone.coords.x) || std::isnan(cone.coords.y))
 			continue;
 
-		marker.header = cone.coords.header;
-		marker.type = marker.CUBE;
-		marker.action = marker.ADD;
-		marker.id = i++;
-		marker.lifetime = ros::Duration(0.5);
-		marker.pose.position.x = cone.coords.x;
-		marker.pose.position.y = cone.coords.y;
-		marker.pose.orientation.w = 1.0;
-		marker.scale.x = 0.1;
-		marker.scale.y = 0.1;
-		marker.scale.z = 0.1;
-		marker.color.a = 1.0;
-	
-		marker.color.a = 1.0;
+		fusion_marker_.header = cone.coords.header;
+		fusion_marker_.id = i++;
+		fusion_marker_.pose.position.x = cone.coords.x;
+		fusion_marker_.pose.position.y = cone.coords.y;
+		
 		if (cone.color == 'b') // blue cone
 		{		  
-			marker.color.r = 0.0;
-			marker.color.g = 0.0;
-			marker.color.b = 1.0;
+			fusion_marker_.color.r = 0.0;
+			fusion_marker_.color.g = 0.0;
+			fusion_marker_.color.b = 1.0;
 		}
 		else if (cone.color == 'y') // yellow cone
 		{		  
-			marker.color.r = 1.0;
-			marker.color.g = 1.0;
-			marker.color.b = 0.0;
+			fusion_marker_.color.r = 1.0;
+			fusion_marker_.color.g = 1.0;
+			fusion_marker_.color.b = 0.0;
 		}
 		else if (cone.color == 's') // orange cone small
 		{		  
-			marker.color.r = 1.0;
-			marker.color.g = 0.5;
-			marker.color.b = 0.0;
+			fusion_marker_.color.r = 1.0;
+			fusion_marker_.color.g = 0.5;
+			fusion_marker_.color.b = 0.0;
 		}
 		else if (cone.color == 'g') // orange cone big
 		{
-			marker.color.r = 1.0;
-			marker.color.g = 0.3;
-			marker.color.b = 0.0;
+			fusion_marker_.color.r = 1.0;
+			fusion_marker_.color.g = 0.3;
+			fusion_marker_.color.b = 0.0;
 		}
 		else
 		{
-			marker.color.r = marker.color.g = marker.color.b = 0;
+			fusion_marker_.color.r = fusion_marker_.color.g = fusion_marker_.color.b = 0;
 		}
-		fusionMarkers.markers.push_back(marker);
+		fusionMarkers.markers.emplace_back(fusion_marker_);
 	}
 	
 	fusion_publisher_.publish(fusionMarkers);
 }
 
-void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg) const
+void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
 {
-	static visualization_msgs::Marker carPoseMarker;
-	geometry_msgs::Point pointCarPose;
 	static int count = 0;
 	if (!(count++ % 100)) 
 	{
-		carPoseMarker.header.frame_id =  "map";
-		carPoseMarker.header.stamp = ros::Time();
-		carPoseMarker.type = visualization_msgs::Marker::POINTS;
-		carPoseMarker.action = visualization_msgs::Marker::ADD;
-		carPoseMarker.id = 0;
-		carPoseMarker.lifetime = ros::Duration(0);
-		carPoseMarker.scale.x = 0.3;
-		carPoseMarker.scale.y = 0.3;
-		carPoseMarker.color.a = 1;
-		carPoseMarker.color.r = 1;
-
+		geometry_msgs::Point pointCarPose;
 		pointCarPose.x = msg->position.x;
 		pointCarPose.y = msg->position.y;
 
-		carPoseMarker.points.push_back(pointCarPose);
-		pose_publisher_.publish(carPoseMarker);
+		pose_marker_.points.emplace_back(pointCarPose);
+		pose_publisher_.publish(pose_marker_);
 	}
 
 	/* publish FOV */
@@ -381,27 +426,17 @@ void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg) const
 	lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
-void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg) const
+void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
 {
-	static sgtdv_msgs::ConeArr coneArr;
-	coneArr.cones.clear();
-
-	static visualization_msgs::Marker coneMarker;
-	coneMarker.points.clear();
-	coneMarker.colors.clear();
-	
-	coneMarker.header.frame_id = "map";
-	coneMarker.header.stamp = ros::Time::now();
-	coneMarker.type = visualization_msgs::Marker::POINTS;
-	coneMarker.action = visualization_msgs::Marker::ADD;
+	map_marker_.points.clear();
+	map_marker_.points.reserve(msg->cones.size());
+	map_marker_.colors.clear();
+	map_marker_.colors.reserve(msg->cones.size());
 	
 	geometry_msgs::Point pointCone;
 	std_msgs::ColorRGBA coneRGBA;
 	for (const auto& cone : msg->cones)
 	{
-		coneMarker.scale.x = 0.2;
-		coneMarker.scale.y = 0.2;
-		
 		pointCone.x = cone.coords.x;
 		pointCone.y = cone.coords.y;
 		
@@ -425,25 +460,16 @@ void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg) const
 		}
 		coneRGBA.a = 1;
 		
-		coneMarker.points.push_back(pointCone);
-		coneMarker.colors.push_back(coneRGBA);
+		map_marker_.points.push_back(pointCone);
+		map_marker_.colors.push_back(coneRGBA);
 	}
-	map_publisher_.publish(coneMarker); 
+	map_publisher_.publish(map_marker_); 
 }
 
-void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg) const
+void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg)
 {
-	static visualization_msgs::Marker trajectory_marker;
-	trajectory_marker.points.clear();
-	trajectory_marker.points.reserve(msg->points.size());
-
-	trajectory_marker.type = visualization_msgs::Marker::POINTS;
-	trajectory_marker.header.frame_id = "map";
-	trajectory_marker.scale.x = 0.2;
-	trajectory_marker.scale.y = 0.2;
-	trajectory_marker.color.r = 1.0f;
-	trajectory_marker.color.a = 1.0;
-	trajectory_marker.pose.orientation.w = 1.0;
+	trajectory_marker_.points.clear();
+	trajectory_marker_.points.reserve(msg->points.size());
 	
 	geometry_msgs::Point trajectory_point;
 
@@ -451,10 +477,10 @@ void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& ms
 	{
 		trajectory_point.x = point.x;
 		trajectory_point.y = point.y;
-		trajectory_marker.points.push_back(trajectory_point);
+		trajectory_marker_.points.push_back(trajectory_point);
 	}
 
-	trajectory_publisher_.publish(trajectory_marker);
+	trajectory_publisher_.publish(trajectory_marker_);
 }
 
 void Visualizator::commandCallback(const sgtdv_msgs::Control::ConstPtr& msg)
@@ -472,7 +498,7 @@ void Visualizator::deleteMarkers(visualization_msgs::MarkerArray& marker_array,
 
 	marker.id = 0;
 	marker.action = marker.DELETEALL;
-	marker_array.markers.push_back(marker);
+	marker_array.markers.emplace_back(marker);
 
 	publisher.publish(marker_array);
 }

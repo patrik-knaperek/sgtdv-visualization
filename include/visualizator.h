@@ -27,13 +27,13 @@ class Visualizator
 		Visualizator(ros::NodeHandle& handle);
 		~Visualizator() = default;
 		
-		void cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const;
-		void lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg) const;
-		void fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg) const;
+		void cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg);
+		void lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg);
+		void fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg);
 		
-		void poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg) const;
-		void mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg) const;
-		void trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg) const;
+		void poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg);
+		void mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg);
+		void trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg);
 		void commandCallback(const sgtdv_msgs::Control::ConstPtr& msg);
 
 	public:
@@ -43,6 +43,12 @@ class Visualizator
 		static constexpr double STEER_GAIN = 2;
 	
 	private:
+		void initCameraMarker(void);
+		void initLidarMarker(void);
+		void initFusionMarker(void);
+		void initPoseMarker(void);
+		void initMapMarker(void);
+		void initTrajectoryMarker(void);
 		void initCommandMarkers(const ros::NodeHandle& handle);
 		void initFOV(const ros::NodeHandle& handle);		
 		void deleteMarkers(visualization_msgs::MarkerArray& marker_array,
@@ -66,7 +72,8 @@ class Visualizator
 		ros::Subscriber trajectory_subscriber_;
 		ros::Subscriber command_subscriber_;
 
-		visualization_msgs::Marker steering_marker_, throtle_marker_;
+		visualization_msgs::Marker camera_marker_, lidar_marker_, fusion_marker_, steering_marker_, throtle_marker_,
+									pose_marker_, map_marker_, trajectory_marker_;
 		visualization_msgs::MarkerArray command_markers_;
 		geometry_msgs::PolygonStamped camera_fov_marker_, lidar_fov_marker_;
 };
