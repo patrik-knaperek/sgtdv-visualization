@@ -3,7 +3,7 @@
 //Authors: Patrik Knaperek
 /*****************************************************/
 
-#include "../include/Visualizator.h"
+#include "../include/visualizator.h"
 
 int main(int argc, char** argv)
 {
