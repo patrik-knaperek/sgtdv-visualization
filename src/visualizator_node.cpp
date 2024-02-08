@@ -1,17 +1,17 @@
 /*****************************************************/
-//Organization: Stuba Green Team
-//Authors: Patrik Knaperek
+/* Organization: Stuba Green Team
+/* Authors: Patrik Knaperek
 /*****************************************************/
 
 #include "../include/visualizator.h"
 
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "visualizator");
-	ros::NodeHandle handle;
-	Visualizator visualizatorObj(handle);
+  ros::init(argc, argv, "visualizator");
+  ros::NodeHandle handle;
+  Visualizator visualizatorObj(handle);
 
-	ros::spin();
+  ros::spin();
 
-	return 0;
+  return 0;
 }
