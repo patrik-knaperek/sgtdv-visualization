@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /RobotModel1
         - /Camera Detections1/Namespaces1
         - /Lidar Detections1/Namespaces1
         - /Trajectory1
@@ -81,7 +82,7 @@ Visualization Manager:
       Reference Frame: gotthard/base_link
       Show Trail: false
       Value: false
-    - Alpha: 1
+    - Alpha: 0.5
       Class: rviz/RobotModel
       Collision Enabled: false
       Enabled: true
@@ -202,7 +203,12 @@ Visualization Manager:
       Marker Topic: /pathplanning/visualize/interpolated_cones
       Name: Path boundaries
       Namespaces:
-        {}
+        end: true
+        left_cones: true
+        left_interpolated: true
+        right_cones: true
+        right_interpolated: true
+        start: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -210,7 +216,7 @@ Visualization Manager:
       Marker Topic: /pathplanning_trajectory/marker
       Name: Trajectory
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -226,7 +232,10 @@ Visualization Manager:
       Marker Topic: /pathtracking_commands/marker
       Name: Control Cmd
       Namespaces:
-        {}
+        steering cmd: true
+        steering range: true
+        throttle cmd: true
+        throttle range: true
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -283,7 +292,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 23.935897827148438
+      Distance: 26.802648544311523
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -291,17 +300,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 3.8101823329925537
-        Y: -3.788390636444092
-        Z: -1.437043309211731
+        X: 5.976850509643555
+        Y: -4.9392991065979
+        Z: -1.8705768585205078
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5153977870941162
+      Pitch: 1.2953987121582031
       Target Frame: <Fixed Frame>
-      Yaw: 3.3699474334716797
+      Yaw: 3.084949493408203
     Saved: ~
 Window Geometry:
   Displays:
@@ -319,5 +328,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1920
-  X: 640
+  X: 2560
   Y: 0

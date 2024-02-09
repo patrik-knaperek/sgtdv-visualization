@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(visualizator)
+project(data_visualization)
 
 add_compile_options(-std=c++14)
 
@@ -26,7 +26,7 @@ include_directories(
   ${EIGEN3_INCLUDE_DIRS}
 )
 
-add_executable(${PROJECT_NAME} src/visualizator.cpp src/visualizator_node.cpp)
+add_executable(${PROJECT_NAME} src/data_visualization.cpp src/data_visualization_node.cpp)
 
 target_link_libraries(${PROJECT_NAME}
    ${catkin_LIBRARIES}

@@ -3,13 +3,13 @@
 /* Authors: Patrik Knaperek
 /*****************************************************/
 
-#include "../include/visualizator.h"
+#include "../include/data_visualization.h"
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "visualizator");
+  ros::init(argc, argv, "dataVisualization");
   ros::NodeHandle handle;
-  Visualizator visualizatorObj(handle);
+  DataVisualization data_visualization(handle);
 
   ros::spin();
 

@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="data_visualization" type="data_visualization" name="data_visualization" output="screen"/>
+    <node pkg="rviz" type="rviz" name="data_visualization_rviz"  respawn="false"
+        args="-d $(find data_visualization)/rviz/data_visualization_sim.rviz" output="screen">
+    </node>
+    
+</launch>

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="2">
 
-  <name>visualizator</name>
+  <name>data_visualization</name>
   <version>0.0.0</version>
-  <description>The visualizator package</description>
+  <description>The data_visualization package</description>
 
   <maintainer email="pknaperek@gmail.com">Patrik Knaperek</maintainer>
 

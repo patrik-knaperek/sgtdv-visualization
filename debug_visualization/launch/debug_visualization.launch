@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="debug_visualization" type="debug_visualization" name="debugVisualization" output="screen"/>
+
+    <node pkg="rviz" type="rviz" name="debugVisualization_rviz" respawn="false"
+        args="-d $(find debug_visualization)/debug_visualization.rviz" output="screen" />
+</launch>

@@ -1,4 +1,4 @@
-# **Visualizator package**
+# **DataVisualization package**
 
 ___
 
@@ -9,7 +9,7 @@ ___
 **Objective:** Visualize data from nodes in RViz. 
 ___
 
-The `visualizator` node subscribes to `sgtdv_msgs` topics and transforms them into `visualization_msgs`, allowing to visualize topic data in RViz. Additionally, using `SGT_VISUALIZE` macro defined in [`SGT_Macros.h`](../SGT_Macros.h), extra data is published from intermediate calculations inside nodes.
+The `dataVisualization` node subscribes to `sgtdv_msgs` topics and transforms them into `visualization_msgs`, allowing to visualize topic data in RViz. Additionally, using `SGT_VISUALIZE` macro defined in [`SGT_Macros.h`](../../SGT_Macros.h), extra data is published from intermediate calculations inside nodes.
 
 ### Related packages
 * [`camera_cone_detection`](../camera_cone_detection/README.md)
@@ -32,11 +32,11 @@ The `visualizator` node subscribes to `sgtdv_msgs` topics and transforms them in
 ## Compilation
 ```sh
 $ cd ${SGT_ROOT}/ros_implementation
-$ catkin build visualizator
+$ catkin build data_visualization
 ```
 
 ### Compilation configuration
-* [`Visualizator.h`](./include/Visualizator.h)
+* [`data_visualization.h`](./include/data_visualization.h)
 	* `THROTTLE_MARKER_BASE` : [m]; base point of throttle visualization bar
 	* `THROTTLE_GAIN` : gain of throttle value in throttle visualization bar
 	* `STEER_MARKER_BASE` : [m]; base point of steering visualization bar
@@ -46,11 +46,11 @@ $ catkin build visualizator
 ```sh
 $ cd ${SGT_ROOT}/ros_implementation
 $ source ./devel/setup.bash
-$ roslaunch visualizator <launchfile>
+$ roslaunch data_visualization <launchfile>
 ```
 To support easy store and change of RViz configuration depending on the usecase, several launchfiles are provided and can be utilized:
-* `visualizator.launch` - default
-* `visualizator_sim.launch` - FSSIM environment
-* `visualizator_rc.launch` - RC car environment
-* `visualizator_camera.launch` - camera standalone environment
-* `visualizator_lidar.launch` - lidar standalone environment
+* `data_visualization.launch` - default
+* `data_visualization_sim.launch` - FSSIM environment
+* `data_visualization_rc.launch` - RC car environment
+* `data_visualization_camera.launch` - camera standalone environment
+* `data_visualization_lidar.launch` - lidar standalone environment

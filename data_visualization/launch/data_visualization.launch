@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="rviz_config" default="$(find data_visualization)/rviz/data_visualization.rviz"/>
+    
+    <node pkg="data_visualization" type="data_visualization" name="data_visualization" output="screen"/>
+    <node pkg="rviz" type="rviz" name="data_visualization_rviz"  respawn="false"
+        args="-d $(arg rviz_config)" output="screen">
+    </node>
+    
+</launch>

@@ -3,9 +3,9 @@
 /* Authors: Patrik Knaperek
 /*****************************************************/
 
-#include "../include/visualizator.h"
+#include "../include/data_visualization.h"
 
-Visualizator::Visualizator(ros::NodeHandle& handle) :
+DataVisualization::DataVisualization(ros::NodeHandle& handle) :
   /* ROS interface init */
   camera_publisher_(handle.advertise<visualization_msgs::MarkerArray>("camera_cones/marker", 1)),
   lidar_publisher_(handle.advertise<visualization_msgs::MarkerArray>("lidar_cones/marker",1)),
@@ -17,13 +17,13 @@ Visualizator::Visualizator(ros::NodeHandle& handle) :
   camera_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true)),
   lidar_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true)),
 
-  camera_subscriber_(handle.subscribe("camera_cones", 1, &Visualizator::cameraCallback, this)),
-  lidar_subscriber_(handle.subscribe("lidar_cones", 1, &Visualizator::lidarCallback, this)),
-  fusion_subscriber_(handle.subscribe("fusion_cones", 1, &Visualizator::fusionCallback, this)),
-  pose_subscriber_(handle.subscribe("slam/pose", 1, &Visualizator::poseCallback, this)),
-  map_subscriber_(handle.subscribe("slam/map", 1, &Visualizator::mapCallback, this)),
-  trajectory_subscriber_(handle.subscribe("pathplanning_trajectory", 1, &Visualizator::trajectoryCallback, this)),
-  command_subscriber_(handle.subscribe("pathtracking_commands", 1, &Visualizator::commandCallback, this))
+  camera_subscriber_(handle.subscribe("camera_cones", 1, &DataVisualization::cameraCallback, this)),
+  lidar_subscriber_(handle.subscribe("lidar_cones", 1, &DataVisualization::lidarCallback, this)),
+  fusion_subscriber_(handle.subscribe("fusion_cones", 1, &DataVisualization::fusionCallback, this)),
+  pose_subscriber_(handle.subscribe("slam/pose", 1, &DataVisualization::poseCallback, this)),
+  map_subscriber_(handle.subscribe("slam/map", 1, &DataVisualization::mapCallback, this)),
+  trajectory_subscriber_(handle.subscribe("pathplanning_trajectory", 1, &DataVisualization::trajectoryCallback, this)),
+  command_subscriber_(handle.subscribe("pathtracking_commands", 1, &DataVisualization::commandCallback, this))
 {
   initCameraMarker();
   initLidarMarker();
@@ -35,7 +35,7 @@ Visualizator::Visualizator(ros::NodeHandle& handle) :
   initFOV(handle);
 }
 
-void Visualizator::initCameraMarker(void)
+void DataVisualization::initCameraMarker(void)
 {
   camera_marker_.type = visualization_msgs::Marker::SPHERE;
   camera_marker_.action = visualization_msgs::Marker::ADD;
@@ -47,7 +47,7 @@ void Visualizator::initCameraMarker(void)
   camera_marker_.color.a = 0.6;
 }
 
-void Visualizator::initLidarMarker(void)
+void DataVisualization::initLidarMarker(void)
 {  
   lidar_marker_.type = visualization_msgs::Marker::CYLINDER;
   lidar_marker_.action = visualization_msgs::Marker::ADD;
@@ -60,7 +60,7 @@ void Visualizator::initLidarMarker(void)
   lidar_marker_.color.r = 1.0;
 }
 
-void Visualizator::initFusionMarker(void)
+void DataVisualization::initFusionMarker(void)
 {
   fusion_marker_.type = visualization_msgs::Marker::CUBE;
   fusion_marker_.action = visualization_msgs::Marker::ADD;
@@ -72,7 +72,7 @@ void Visualizator::initFusionMarker(void)
   fusion_marker_.color.a = 1.0;
 }
 
-void Visualizator::initPoseMarker(void)
+void DataVisualization::initPoseMarker(void)
 {
   pose_marker_.header.frame_id =  "map";
   pose_marker_.header.stamp = ros::Time();
@@ -85,7 +85,7 @@ void Visualizator::initPoseMarker(void)
   pose_marker_.color.r = 1;
 }
 
-void Visualizator::initMapMarker(void)
+void DataVisualization::initMapMarker(void)
 {
   map_marker_.header.frame_id = "map";
   map_marker_.type = visualization_msgs::Marker::POINTS;
@@ -94,7 +94,7 @@ void Visualizator::initMapMarker(void)
   map_marker_.scale.y = 0.2;
 }
 
-void Visualizator::initTrajectoryMarker(void)
+void DataVisualization::initTrajectoryMarker(void)
 {
   trajectory_marker_.type = visualization_msgs::Marker::POINTS;
   trajectory_marker_.header.frame_id = "map";
@@ -105,7 +105,7 @@ void Visualizator::initTrajectoryMarker(void)
   trajectory_marker_.pose.orientation.w = 1.0;
 }
 
-void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
+void DataVisualization::initCommandMarkers(const ros::NodeHandle& handle)
 {
   /* Load command parameters from server */
   
@@ -215,7 +215,7 @@ void Visualizator::initCommandMarkers(const ros::NodeHandle& handle)
   command_publisher_.publish(command_markers_);
 }
 
-void Visualizator::initFOV(const ros::NodeHandle& handle)
+void DataVisualization::initFOV(const ros::NodeHandle& handle)
 {
   /* Load FOV dimensioins from parameter server */
   
@@ -282,7 +282,7 @@ void Visualizator::initFOV(const ros::NodeHandle& handle)
   lidar_fov_marker_.polygon.points.push_back(point);
 }
 
-void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
+void DataVisualization::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
 {
   static visualization_msgs::MarkerArray camera_markers;
   deleteMarkers(camera_markers, camera_publisher_);
@@ -334,7 +334,7 @@ void Visualizator::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &ms
   camera_publisher_.publish(camera_markers);  
 }
 
-void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg)
+void DataVisualization::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &msg)
 {
   static visualization_msgs::MarkerArray lidar_markers;
   deleteMarkers(lidar_markers, lidar_publisher_);
@@ -354,7 +354,7 @@ void Visualizator::lidarCallback(const sgtdv_msgs::Point2DStampedArr::ConstPtr &
   lidar_publisher_.publish(lidar_markers); 
 }
 
-void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
+void DataVisualization::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
 {
   static visualization_msgs::MarkerArray fusion_markers;
   deleteMarkers(fusion_markers, fusion_publisher_);
@@ -405,7 +405,7 @@ void Visualizator::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &ms
   fusion_publisher_.publish(fusion_markers);
 }
 
-void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
+void DataVisualization::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
 {
   static int count = 0;
   if(!(count++ % 100)) 
@@ -423,7 +423,7 @@ void Visualizator::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
   lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
-void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
+void DataVisualization::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
 {
   map_marker_.points.clear();
   map_marker_.points.reserve(msg->cones.size());
@@ -463,7 +463,7 @@ void Visualizator::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
   map_publisher_.publish(map_marker_); 
 }
 
-void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg)
+void DataVisualization::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg)
 {
   trajectory_marker_.points.clear();
   trajectory_marker_.points.reserve(msg->points.size());
@@ -480,14 +480,14 @@ void Visualizator::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& ms
   trajectory_publisher_.publish(trajectory_marker_);
 }
 
-void Visualizator::commandCallback(const sgtdv_msgs::Control::ConstPtr& msg)
+void DataVisualization::commandCallback(const sgtdv_msgs::Control::ConstPtr& msg)
 {
   command_markers_.markers[2].points[1].x = THROTTLE_MARKER_BASE[0] + msg->speed * THROTTLE_GAIN;;
   command_markers_.markers[3].points[1].y = STEER_MARKER_BASE[1] + msg->steering_angle * STEER_GAIN;
   command_publisher_.publish(command_markers_);
 }
 
-void Visualizator::deleteMarkers(visualization_msgs::MarkerArray& marker_array,
+void DataVisualization::deleteMarkers(visualization_msgs::MarkerArray& marker_array,
                                 const ros::Publisher& publisher) const
 {
   marker_array.markers.clear();

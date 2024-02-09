@@ -19,13 +19,13 @@
 #include <sgtdv_msgs/FusionMsg.h>
 #include <sgtdv_msgs/CarPose.h>
 #include <sgtdv_msgs/Control.h>
-#include "../../SGT_Utils.h"
+#include "../../../SGT_Utils.h"
 
-class Visualizator
+class DataVisualization
 {
 public:
-  Visualizator(ros::NodeHandle& handle);
-  ~Visualizator() = default;
+  DataVisualization(ros::NodeHandle& handle);
+  ~DataVisualization() = default;
   
   /* Callbacks */
   void cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg);
