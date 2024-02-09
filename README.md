@@ -37,8 +37,8 @@ $ catkin build visualizator
 
 ### Compilation configuration
 * [`Visualizator.h`](./include/Visualizator.h)
-	* `THROTLE_MARKER_BASE` : [m]; base point of throtle visualization bar
-	* `THROTLE_GAIN` : gain of throtle value in throtle visualization bar
+	* `THROTTLE_MARKER_BASE` : [m]; base point of throttle visualization bar
+	* `THROTTLE_GAIN` : gain of throttle value in throttle visualization bar
 	* `STEER_MARKER_BASE` : [m]; base point of steering visualization bar
 	* `STEER_GAIN` : gain of steering value in steering visualization bar
 
