@@ -52,6 +52,7 @@ private:
   void initCommandMarkers(const ros::NodeHandle& handle);
   void initFOV(const ros::NodeHandle& handle);    
   void deleteMarkers(visualization_msgs::MarkerArray& marker_array, const ros::Publisher& publisher) const;
+  std_msgs::ColorRGBA setConeColor(const uint8_t color_msg);
 
   ros::Publisher camera_publisher_;
   ros::Publisher lidar_publisher_;

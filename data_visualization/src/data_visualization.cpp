@@ -298,35 +298,7 @@ void DataVisualization::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPt
     camera_marker_.id = i++;
     camera_marker_.pose.position.x = cone.coords.x;
     camera_marker_.pose.position.y = cone.coords.y;
-    
-    if(cone.color == 'b') // blue cone
-    {      
-      camera_marker_.color.r = 0.0;
-      camera_marker_.color.g = 0.0;
-      camera_marker_.color.b = 1.0;
-    }
-    else if(cone.color == 'y') // yellow cone
-    {      
-      camera_marker_.color.r = 1.0;
-      camera_marker_.color.g = 1.0;
-      camera_marker_.color.b = 0.0;
-    }
-    else if(cone.color == 's') // orange cone small
-    {      
-      camera_marker_.color.r = 1.0;
-      camera_marker_.color.g = 0.5;
-      camera_marker_.color.b = 0.0;
-    }
-    else if(msg->cones[i].color == 'g') // orange cone big
-    {
-      camera_marker_.color.r = 1.0;
-      camera_marker_.color.g = 0.3;
-      camera_marker_.color.b = 0.0;
-    }
-    else
-    {
-      camera_marker_.color.r = camera_marker_.color.g = camera_marker_.color.b = 0;
-    }
+    camera_marker_.color = setConeColor(cone.color);
     
     camera_markers.markers.emplace_back(camera_marker_);
   }
@@ -370,35 +342,8 @@ void DataVisualization::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPt
     fusion_marker_.id = i++;
     fusion_marker_.pose.position.x = cone.coords.x;
     fusion_marker_.pose.position.y = cone.coords.y;
-    
-    if(cone.color == 'b') // blue cone
-    {      
-      fusion_marker_.color.r = 0.0;
-      fusion_marker_.color.g = 0.0;
-      fusion_marker_.color.b = 1.0;
-    }
-    else if(cone.color == 'y') // yellow cone
-    {      
-      fusion_marker_.color.r = 1.0;
-      fusion_marker_.color.g = 1.0;
-      fusion_marker_.color.b = 0.0;
-    }
-    else if(cone.color == 's') // orange cone small
-    {      
-      fusion_marker_.color.r = 1.0;
-      fusion_marker_.color.g = 0.5;
-      fusion_marker_.color.b = 0.0;
-    }
-    else if(cone.color == 'g') // orange cone big
-    {
-      fusion_marker_.color.r = 1.0;
-      fusion_marker_.color.g = 0.3;
-      fusion_marker_.color.b = 0.0;
-    }
-    else
-    {
-      fusion_marker_.color.r = fusion_marker_.color.g = fusion_marker_.color.b = 0;
-    }
+    fusion_marker_.color = setConeColor(cone.color);
+
     fusion_markers.markers.emplace_back(fusion_marker_);
   }
   
@@ -431,34 +376,14 @@ void DataVisualization::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
   map_marker_.colors.reserve(msg->cones.size());
   
   geometry_msgs::Point point_cone;
-  std_msgs::ColorRGBA cone_RGBA;
+  // std_msgs::ColorRGBA cone_RGBA;
   for(const auto& cone : msg->cones)
   {
     point_cone.x = cone.coords.x;
     point_cone.y = cone.coords.y;
     
-    if(cone.color == 1) // blue
-    {
-      cone_RGBA.r = 0;  
-      cone_RGBA.g = 0;
-      cone_RGBA.b = 1;
-    }
-    else if(cone.color == 2) // yellow
-    {
-      cone_RGBA.r = 1;   
-      cone_RGBA.g = 1;
-      cone_RGBA.b = 0;
-    }
-    else if(cone.color == 3) // orange
-    {
-      cone_RGBA.r = 1;  
-      cone_RGBA.g = 0.55;
-      cone_RGBA.b = 0;   
-    }
-    cone_RGBA.a = 1;
-    
     map_marker_.points.push_back(point_cone);
-    map_marker_.colors.push_back(cone_RGBA);
+    map_marker_.colors.push_back(setConeColor(cone.color));
   }
   map_publisher_.publish(map_marker_); 
 }
@@ -498,4 +423,44 @@ void DataVisualization::deleteMarkers(visualization_msgs::MarkerArray& marker_ar
   marker_array.markers.emplace_back(marker);
 
   publisher.publish(marker_array);
+}
+
+std_msgs::ColorRGBA DataVisualization::setConeColor(const uint8_t color_msg)
+{
+  std_msgs::ColorRGBA cone_rgba;
+
+  cone_rgba.a = 1.;
+
+  switch(color_msg)
+  {
+    case 'b' : // blue cone
+      cone_rgba.r = 0.0;
+      cone_rgba.g = 0.0;
+      cone_rgba.b = 1.0;
+      break;
+
+    case 'y' : // yellow cone
+      cone_rgba.r = 1.0;
+      cone_rgba.g = 1.0;
+      cone_rgba.b = 0.0;
+      break;
+
+    case 's' : // orange cone small
+      cone_rgba.r = 1.0;
+      cone_rgba.g = 0.5;
+      cone_rgba.b = 0.0;
+      break;
+
+    case 'g' : // orange cone big
+      cone_rgba.r = 1.0;
+      cone_rgba.g = 0.3;
+      cone_rgba.b = 0.0;
+      break;
+
+    default :
+      cone_rgba.r = cone_rgba.g = cone_rgba.b = 0;
+      break;
+  }
+  
+  return cone_rgba;
 }
