@@ -8,7 +8,9 @@ Panels:
         - /RobotModel1
         - /Camera Detections1/Namespaces1
         - /Lidar Detections1/Namespaces1
+        - /Track boundaries1
         - /Trajectory1
+        - /Pure Pursuit1
         - /Lidar FOV1
         - /Camera FOV1
       Splitter Ratio: 0.5833333134651184
@@ -92,57 +94,6 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        camera_center_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        chassis:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        cog:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        front_center_lidar_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_front_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_rear_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_steering_hinge:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_front_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_rear_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_steering_hinge:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: fssim/vehicle
@@ -154,8 +105,7 @@ Visualization Manager:
       Marker Topic: /fssim/track/markers
       Name: FSSIM Track
       Namespaces:
-        tk_start: true
-        track: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -163,7 +113,7 @@ Visualization Manager:
       Marker Topic: /camera_cones/marker
       Name: Camera Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -171,7 +121,7 @@ Visualization Manager:
       Marker Topic: /lidar_cones/marker
       Name: Lidar Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
@@ -179,7 +129,7 @@ Visualization Manager:
       Marker Topic: /fusion_cones/marker
       Name: Fused Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
@@ -187,7 +137,7 @@ Visualization Manager:
       Marker Topic: /slam/map/marker
       Name: SLAM Map
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -200,15 +150,10 @@ Visualization Manager:
       Value: false
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /pathplanning/visualize/interpolated_cones
-      Name: Path boundaries
+      Marker Topic: /pathplanning/visualize/track_boundaries
+      Name: Track boundaries
       Namespaces:
-        end: true
-        left_cones: true
-        left_interpolated: true
-        right_cones: true
-        right_interpolated: true
-        start: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -216,7 +161,7 @@ Visualization Manager:
       Marker Topic: /pathplanning_trajectory/marker
       Name: Trajectory
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -232,16 +177,13 @@ Visualization Manager:
       Marker Topic: /pathtracking_commands/marker
       Name: Control Cmd
       Namespaces:
-        steering cmd: true
-        steering range: true
-        throttle cmd: true
-        throttle range: true
+        {}
       Queue Size: 1
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /pathtracking/visualize/target
-      Name: Pathtracking target
+      Marker Topic: /pathtracking/visualize/pure_pursuit
+      Name: Pure Pursuit
       Namespaces:
         {}
       Queue Size: 100

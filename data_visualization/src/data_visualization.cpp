@@ -326,7 +326,7 @@ void DataVisualization::lidarCallback(const sgtdv_msgs::Point2DStampedArr::Const
   lidar_publisher_.publish(lidar_markers); 
 }
 
-void DataVisualization::fusionCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
+void DataVisualization::fusionCallback(const sgtdv_msgs::ConeWithCovStampedArr::ConstPtr &msg)
 {
   static visualization_msgs::MarkerArray fusion_markers;
   deleteMarkers(fusion_markers, fusion_publisher_);
