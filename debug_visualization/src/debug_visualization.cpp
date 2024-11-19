@@ -37,14 +37,14 @@ geometry_msgs::Point DebugVisualization::FPoint2D::getPoint() const
 DebugVisualization::DebugVisualization(ros::NodeHandle& nh) :
   /* ROS interface init */
   publisher_(nh.advertise<visualization_msgs::MarkerArray>("debug_visualization_out", 1)),
-  camera_sub_(nh.subscribe("camera_cone_detection_debug_state", 2, &DebugVisualization::cameraCallback, this)),
+  camera_sub_(nh.subscribe("camera/debug_state", 2, &DebugVisualization::cameraCallback, this)),
 
-  lidar_sub_(nh.subscribe("lidar_cone_detection_debug_state", 2, &DebugVisualization::lidarCallback, this)),
-  fusion_sub_(nh.subscribe("fusion_debug_state", 2, &DebugVisualization::fusionCallback, this)),
-  slam_sub_(nh.subscribe("slam_debug_state", 2, &DebugVisualization::slamCallback, this)),
-  path_planning_sub_(nh.subscribe("pathplanning_debug_state", 2, &DebugVisualization::pathPlanningCallback, this)),
-  path_tracking_sub_(nh.subscribe("pathtracking_debug_state", 2, &DebugVisualization::pathTrackingCallback, this)),
-  jetson_CAN_interface_sub_(nh.subscribe("jetson_can_interface_debug_state", 2, &DebugVisualization::jetsonCANInterfaceCallback, this))
+  lidar_sub_(nh.subscribe("lidar/debug_state", 2, &DebugVisualization::lidarCallback, this)),
+  fusion_sub_(nh.subscribe("fusion/debug_state", 2, &DebugVisualization::fusionCallback, this)),
+  slam_sub_(nh.subscribe("slam/debug_state", 2, &DebugVisualization::slamCallback, this)),
+  path_planning_sub_(nh.subscribe("path_planning/debug_state", 2, &DebugVisualization::pathPlanningCallback, this)),
+  path_tracking_sub_(nh.subscribe("path_tracking/debug_state", 2, &DebugVisualization::pathTrackingCallback, this)),
+  jetson_CAN_interface_sub_(nh.subscribe("jetson_can_interface/debug_state", 2, &DebugVisualization::jetsonCANInterfaceCallback, this))
 {
   initMarkerArray();
   initNodes();

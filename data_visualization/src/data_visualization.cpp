@@ -7,23 +7,23 @@
 
 DataVisualization::DataVisualization(ros::NodeHandle& handle) :
   /* ROS interface init */
-  camera_publisher_(handle.advertise<visualization_msgs::MarkerArray>("camera_cones/marker", 1)),
-  lidar_publisher_(handle.advertise<visualization_msgs::MarkerArray>("lidar_cones/marker",1)),
-  fusion_publisher_(handle.advertise<visualization_msgs::MarkerArray>("fusion_cones/marker",1)),
+  camera_publisher_(handle.advertise<visualization_msgs::MarkerArray>("camera/cones/marker", 1)),
+  lidar_publisher_(handle.advertise<visualization_msgs::MarkerArray>("lidar/cones/marker",1)),
+  fusion_publisher_(handle.advertise<visualization_msgs::MarkerArray>("fusion/cones/marker",1)),
   pose_publisher_(handle.advertise<visualization_msgs::Marker>("slam/pose/marker", 1)),
   map_publisher_(handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1)),
-  trajectory_publisher_(handle.advertise<visualization_msgs::Marker>("pathplanning_trajectory/marker",1, true)),
-  command_publisher_(handle.advertise<visualization_msgs::MarkerArray>("pathtracking_commands/marker", 1)),
+  trajectory_publisher_(handle.advertise<visualization_msgs::Marker>("path_planning/trajectory/marker",1, true)),
+  command_publisher_(handle.advertise<visualization_msgs::MarkerArray>("path_tracking/cmd/marker", 1)),
   camera_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true)),
   lidar_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true)),
 
-  camera_subscriber_(handle.subscribe("camera_cones", 1, &DataVisualization::cameraCallback, this)),
-  lidar_subscriber_(handle.subscribe("lidar_cones", 1, &DataVisualization::lidarCallback, this)),
-  fusion_subscriber_(handle.subscribe("fusion_cones", 1, &DataVisualization::fusionCallback, this)),
+  camera_subscriber_(handle.subscribe("camera/cones", 1, &DataVisualization::cameraCallback, this)),
+  lidar_subscriber_(handle.subscribe("lidar/cones", 1, &DataVisualization::lidarCallback, this)),
+  fusion_subscriber_(handle.subscribe("fusion/cones", 1, &DataVisualization::fusionCallback, this)),
   pose_subscriber_(handle.subscribe("slam/pose", 1, &DataVisualization::poseCallback, this)),
   map_subscriber_(handle.subscribe("slam/map", 1, &DataVisualization::mapCallback, this)),
-  trajectory_subscriber_(handle.subscribe("pathplanning_trajectory", 1, &DataVisualization::trajectoryCallback, this)),
-  command_subscriber_(handle.subscribe("pathtracking_commands", 1, &DataVisualization::commandCallback, this))
+  trajectory_subscriber_(handle.subscribe("path_planning/trajectory", 1, &DataVisualization::trajectoryCallback, this)),
+  command_subscriber_(handle.subscribe("path_tracking/cmd", 1, &DataVisualization::commandCallback, this))
 {
   initCameraMarker();
   initLidarMarker();
@@ -223,14 +223,14 @@ void DataVisualization::initFOV(const ros::NodeHandle& handle)
   float lidar_x_min, lidar_x_max, lidar_y_min, lidar_y_max;
   std::string camera_frame_id, lidar_frame_id;
 
-  Utils::loadParam(handle, "camera/x_min", 0.f, &camera_x_min);
-  Utils::loadParam(handle, "camera/x_max", 0.f, &camera_x_max);
-  Utils::loadParam(handle, "camera/bearing_min", 0.f, &camera_bear_min);
-  Utils::loadParam(handle, "camera/bearing_max", 0.f, &camera_bear_max);
-  Utils::loadParam(handle, "lidar/x_min", 0.f, &lidar_x_min);
-  Utils::loadParam(handle, "lidar/x_max", 0.f, &lidar_x_max);
-  Utils::loadParam(handle, "lidar/y_min", 0.f, &lidar_y_min);
-  Utils::loadParam(handle, "lidar/y_max", 0.f, &lidar_y_max);
+  Utils::loadParam(handle, "camera/fov/x/min", 0.f, &camera_x_min);
+  Utils::loadParam(handle, "camera/fov/x/max", 0.f, &camera_x_max);
+  Utils::loadParam(handle, "camera/fov/bearing/min", 0.f, &camera_bear_min);
+  Utils::loadParam(handle, "camera/fov/bearing/max", 0.f, &camera_bear_max);
+  Utils::loadParam(handle, "lidar/fov/x/min", 0.f, &lidar_x_min);
+  Utils::loadParam(handle, "lidar/fov/x/max", 0.f, &lidar_x_max);
+  Utils::loadParam(handle, "lidar/fov/y/min", 0.f, &lidar_y_min);
+  Utils::loadParam(handle, "lidar/fov/y/max", 0.f, &lidar_y_max);
   Utils::loadParam(handle, "camera/frame_id", std::string("camera_center"), &camera_frame_id);
   Utils::loadParam(handle, "lidar/frame_id", std::string("lidar"), &lidar_frame_id);
 

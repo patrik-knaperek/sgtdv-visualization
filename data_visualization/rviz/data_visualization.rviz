@@ -5,8 +5,22 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Camera Detections1
+        - /Lidar Detections1
+        - /Car Pose1
+        - /Fused Detections1
+        - /SLAM Map1
+        - /Trajectory1
+        - /CameraPose1
+        - /Odom1
+        - /Control1
+        - /Lidar FOV1
+        - /Camera FOV1
+        - /PathTracking1
         - /PathTracking1/Namespaces1
-      Splitter Ratio: 0.32780084013938904
+        - /Path boundaries1
+        - /RRT1
+      Splitter Ratio: 0.5027777552604675
     Tree Height: 674
   - Class: rviz/Selection
     Name: Selection
@@ -53,18 +67,18 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /camera_cones/marker
+      Marker Topic: /camera/cones/marker
       Name: Camera Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /lidar_cones/marker
+      Marker Topic: /lidar/cones/marker
       Name: Lidar Detections
       Namespaces:
-        "": true
+        {}
       Queue Size: 20
       Value: true
     - Alpha: 1
@@ -123,7 +137,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /fusion_cones/marker
+      Marker Topic: /fusion/cones/marker
       Name: Fused Detections
       Namespaces:
         {}
@@ -134,15 +148,15 @@ Visualization Manager:
       Marker Topic: /slam/map/marker
       Name: SLAM Map
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /pathplanning_trajectory/marker
+      Marker Topic: /path_planning/trajectory/marker
       Name: Trajectory
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Alpha: 1
@@ -173,7 +187,7 @@ Visualization Manager:
       Shaft Length: 1
       Shaft Radius: 0.05000000074505806
       Shape: Arrow
-      Topic: /camera_pose
+      Topic: /camera/pose
       Unreliable: false
       Value: true
     - Alpha: 1
@@ -182,12 +196,12 @@ Visualization Manager:
       Length: 1
       Name: Odom
       Radius: 0.10000000149011612
-      Reference Frame: <Fixed Frame>
+      Reference Frame: odom
       Show Trail: false
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /pathtracking_commands/marker
+      Marker Topic: /path_tracking/cmd/marker
       Name: Control
       Namespaces:
         {}
@@ -213,7 +227,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /pathtracking/visualize/target
+      Marker Topic: /path_tracking/visualize/target
       Name: PathTracking
       Namespaces:
         {}
@@ -221,20 +235,15 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /pathplanning/visualize/path_boundaries
+      Marker Topic: /path_planning/visualize/path_boundaries
       Name: Path boundaries
       Namespaces:
-        finish: true
-        left_cones: true
-        left_interpolated: true
-        right_cones: true
-        right_interpolated: true
-        start: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /pathplanning/visualize/rrt
+      Marker Topic: /path_planning/visualize/rrt
       Name: RRT
       Namespaces:
         {}
@@ -304,5 +313,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1680
-  X: 2560
+  X: 880
   Y: 0

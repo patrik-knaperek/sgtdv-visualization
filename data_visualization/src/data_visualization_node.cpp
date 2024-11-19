@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "dataVisualization");
+  ros::init(argc, argv, "data_visualization");
   ros::NodeHandle handle;
   DataVisualization data_visualization(handle);
 
