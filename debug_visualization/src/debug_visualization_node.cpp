@@ -9,7 +9,7 @@ constexpr int FPS = 120;
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "debugVisualization");
+  ros::init(argc, argv, "debug_visualization");
   ros::NodeHandle handle;
 
   DebugVisualization debug_visualization(handle);
