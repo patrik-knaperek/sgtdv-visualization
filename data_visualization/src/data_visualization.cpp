@@ -213,7 +213,7 @@ void DataVisualization::initCommandMarkers(const ros::NodeHandle& handle)
 
 void DataVisualization::initFOV(const ros::NodeHandle& handle)
 {
-  /* Load FOV dimensioins from parameter server */
+  /* Load FOV dimensions from parameter server */
   
   float camera_x_min, camera_x_max, camera_bear_min, camera_bear_max;
   float lidar_x_min, lidar_x_max, lidar_y_min, lidar_y_max;
@@ -276,6 +276,9 @@ void DataVisualization::initFOV(const ros::NodeHandle& handle)
   point.x = lidar_x_max;
   point.y = lidar_y_min;
   lidar_fov_marker_.polygon.points.push_back(point);
+
+  camera_fov_publisher_.publish(camera_fov_marker_);
+  lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
 void DataVisualization::cameraCallback(const sgtdv_msgs::ConeStampedArr::ConstPtr &msg)
@@ -358,10 +361,6 @@ void DataVisualization::poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg)
     pose_marker_.points.emplace_back(point_car_pose);
     pose_publisher_.publish(pose_marker_);
   }
-
-  /* publish FOV */
-  camera_fov_publisher_.publish(camera_fov_marker_);
-  lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
 
 void DataVisualization::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
