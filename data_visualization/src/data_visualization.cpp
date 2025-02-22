@@ -227,7 +227,7 @@ void DataVisualization::initFOV(const ros::NodeHandle& handle)
   Utils::loadParam(handle, "lidar/fov/x/max", 0.f, &lidar_x_max);
   Utils::loadParam(handle, "lidar/fov/y/min", 0.f, &lidar_y_min);
   Utils::loadParam(handle, "lidar/fov/y/max", 0.f, &lidar_y_max);
-  Utils::loadParam(handle, "camera/frame_id", std::string("camera_center"), &camera_frame_id);
+  Utils::loadParam(handle, "camera/frame_id", std::string("camera_left"), &camera_frame_id);
   Utils::loadParam(handle, "lidar/frame_id", std::string("lidar"), &lidar_frame_id);
 
   
@@ -276,7 +276,6 @@ void DataVisualization::initFOV(const ros::NodeHandle& handle)
   point.x = lidar_x_max;
   point.y = lidar_y_min;
   lidar_fov_marker_.polygon.points.push_back(point);
-
   camera_fov_publisher_.publish(camera_fov_marker_);
   lidar_fov_publisher_.publish(lidar_fov_marker_);
 }
