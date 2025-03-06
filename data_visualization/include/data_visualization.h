@@ -19,6 +19,7 @@
 #include <sgtdv_msgs/ConeWithCovStampedArr.h>
 #include <sgtdv_msgs/Point2DArr.h>
 #include <sgtdv_msgs/Point2DStampedArr.h>
+#include <sgtdv_msgs/Trajectory.h>
 #include <sgtdv_msgs/CarPose.h>
 #include <sgtdv_msgs/Control.h>
 #include "../../../SGT_Utils.h"
@@ -35,7 +36,7 @@ public:
   void fusionCallback(const sgtdv_msgs::ConeWithCovStampedArr::ConstPtr &msg);
   void poseCallback(const sgtdv_msgs::CarPose::ConstPtr& msg);
   void mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg);
-  void trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg);
+  void trajectoryCallback(const sgtdv_msgs::Trajectory::ConstPtr& msg);
   void commandCallback(const sgtdv_msgs::Control::ConstPtr& msg);
 
   /* Constants */

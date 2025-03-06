@@ -12,21 +12,21 @@ ___
 The `dataVisualization` node subscribes to `sgtdv_msgs` topics and transforms them into `visualization_msgs`, allowing to visualize topic data in RViz. Additionally, using `SGT_VISUALIZE` macro defined in [`SGT_Macros.h`](../../SGT_Macros.h), extra data is published from intermediate calculations inside nodes.
 
 ### Related packages
-* [`camera_driver`](../camera_driver/README.md)
-* [`lidar_cone_detection`](../lidar_cone_detection/README.md)
-* [`fusion`](../fusion/README.md)
-* [`mapper`](../../mapper/README.md)
-* [`path_planning`](../path_planning/README.md)
-* [`path_tracking`](../path_tracking/README.md)
+* [`camera_driver`](/src/camera_driver/README.md)
+* [`lidar_cone_detection`](/src/lidar_cone_detection/README.md)
+* [`fusion`](/src/fusion/README.md)
+* [`mapper`](/src/mapper/README.md)
+* [`path_planning`](/src/path_planning/README.md)
+* [`path_tracking`](/src/path_tracking/README.md)
 
 ### Topic conversions
-* `/camera/cones [sgtdv_msgs/ConeStampedArr] → /camera/cones/marker [visualization_msgs/MarkerArray]`
-* `/lidar/cones [sgtdv_msgs/Point2DStampedArr] → /lidar/cones/marker [visualization_msgs/MarkerArray]`
-* `/fusion/cones [sgtdv_msgs/ConeWithCovStampedArr] → /fusion/cones/marker [visualization_msgs/MarkerArray]`
-* `/slam/pose [sgtdv_msgs/CarPose] → /slam/pose/marker [visualization_msgs/Marker]`
-* `/slam/map [sgtdv_msgs/ConeArr] → /slam/map/marker [visualization_msgs/Marker]`
-* `/path_planning/trajectory [sgtdv_msgs/Point2DArr] → /path_planning/trajectory/marker [visualization_msgs/Marker]`
-* `/path_tracking/cmd [sgtdv_msgs/Control] → /path_tracking/cmd/marker [visualization_msgs/MarkerArray]`
+* `/camera/cones` [[`sgtdv_msgs/ConeStampedArr`](/src/sgtdv_msgs/msg/ConeStampedArr.msg)] → `/camera/cones/marker` [`visualization_msgs/MarkerArray`]
+* `/lidar/cones` [[`sgtdv_msgs/Point2DStampedArr`](/src/sgtdv_msgs/msg/Point2DStampedArr.msg)] → `/lidar/cones/marker` [`visualization_msgs/MarkerArray`]
+* `/fusion/cones` [[`sgtdv_msgs/ConeWithCovStampedArr`](/src/sgtdv_msgs/msg/ConeWithCovStampedArr.msg)] → `/fusion/cones/marker` [`visualization_msgs/MarkerArray`]
+* `/slam/pose` [[`sgtdv_msgs/CarPose`](/src/sgtdv_msgs/msg/CarPose.msg)] → `/slam/pose/marker` [`visualization_msgs/Marker`]
+* `/slam/map` [[`sgtdv_msgs/ConeArr`](/src/sgtdv_msgs/msg/ConeArr.msg)] → `/slam/map/marker` [`visualization_msgs/Marker`]
+* `/path_planning/trajectory` [[`sgtdv_msgs/Trajectory`](/src/sgtdv_msgs/msg/Trajectory.msg)] → `/path_planning/trajectory/marker` [`visualization_msgs/Marker`]
+* `/path_tracking/cmd` [[`sgtdv_msgs/Control`](/src/sgtdv_msgs/msg/Control.msg)] → `/path_tracking/cmd/marker` [`visualization_msgs/MarkerArray`]
 
 
 ## Compilation

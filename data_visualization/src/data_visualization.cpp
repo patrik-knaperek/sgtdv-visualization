@@ -388,14 +388,14 @@ void DataVisualization::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
   map_publisher_.publish(map_marker_); 
 }
 
-void DataVisualization::trajectoryCallback(const sgtdv_msgs::Point2DArr::ConstPtr& msg)
+void DataVisualization::trajectoryCallback(const sgtdv_msgs::Trajectory::ConstPtr& msg)
 {
   trajectory_marker_.points.clear();
-  trajectory_marker_.points.reserve(msg->points.size());
+  trajectory_marker_.points.reserve(msg->path.points.size());
   
   geometry_msgs::Point trajectory_point;
 
-  for(auto &point : msg->points)
+  for(auto &point : msg->path.points)
   {
     trajectory_point.x = point.x;
     trajectory_point.y = point.y;
