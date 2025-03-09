@@ -112,10 +112,10 @@ void DataVisualization::initCommandMarkers(const ros::NodeHandle& handle)
   double steer_min, steer_max;
   int throttle_min, throttle_max;
   std::string base_frame_id;
-  Utils::loadParam(handle, "/controller/steering/min", -1.0, &steer_min);
-  Utils::loadParam(handle, "/controller/steering/max", 1.0, &steer_max);
-  Utils::loadParam(handle, "/controller/speed/min", 0, &throttle_min);
-  Utils::loadParam(handle, "/controller/speed/max", 0, &throttle_max);
+  Utils::loadParam(handle, "/controller/steering/cmd_min", -1.0, &steer_min);
+  Utils::loadParam(handle, "/controller/steering/cmd_max", 1.0, &steer_max);
+  Utils::loadParam(handle, "/controller/speed/cmd_min", 0, &throttle_min);
+  Utils::loadParam(handle, "/controller/speed/cmd_max", 0, &throttle_max);
   Utils::loadParam(handle, "/base_frame_id", std::string("base_link"), &base_frame_id);
 
   geometry_msgs::Point point;
