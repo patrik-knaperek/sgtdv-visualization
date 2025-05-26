@@ -12,6 +12,7 @@
 #include <ros/ros.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <geometry_msgs/PolygonStamped.h>
+#include <nav_msgs/Path.h>
 
 /* SGT */
 #include <sgtdv_msgs/ConeArr.h>
@@ -62,7 +63,8 @@ private:
   ros::Publisher fusion_publisher_;
   ros::Publisher pose_publisher_;
   ros::Publisher map_publisher_;
-  ros::Publisher trajectory_publisher_;
+  ros::Publisher trajectory_pos_publisher_;
+  ros::Publisher trajectory_vel_publisher_;
   ros::Publisher command_publisher_;
   ros::Publisher camera_fov_publisher_;
   ros::Publisher lidar_fov_publisher_;
@@ -76,7 +78,8 @@ private:
   ros::Subscriber command_subscriber_;
 
   visualization_msgs::Marker camera_marker_, lidar_marker_, fusion_marker_, steering_marker_, throtle_marker_,
-                              pose_marker_, map_marker_, trajectory_marker_;
+                              pose_marker_, map_marker_;
   visualization_msgs::MarkerArray command_markers_;
   geometry_msgs::PolygonStamped camera_fov_marker_, lidar_fov_marker_;
+  nav_msgs::Path trajectory_pos_marker_, trajectory_vel_marker_;
 };

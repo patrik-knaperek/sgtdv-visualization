@@ -12,7 +12,8 @@ DataVisualization::DataVisualization(ros::NodeHandle& handle) :
   fusion_publisher_(handle.advertise<visualization_msgs::MarkerArray>("fusion/cones/marker",1)),
   pose_publisher_(handle.advertise<visualization_msgs::Marker>("slam/pose/marker", 1)),
   map_publisher_(handle.advertise<visualization_msgs::Marker>("slam/map/marker", 1)),
-  trajectory_publisher_(handle.advertise<visualization_msgs::Marker>("path_planning/trajectory/marker",1, true)),
+  trajectory_pos_publisher_(handle.advertise<nav_msgs::Path>("path_planning/trajectory/marker/position",1, true)),
+  trajectory_vel_publisher_(handle.advertise<nav_msgs::Path>("path_planning/trajectory/marker/speed",1, true)),
   command_publisher_(handle.advertise<visualization_msgs::MarkerArray>("path_tracking/cmd/marker", 1)),
   camera_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("camera/fov_visualize", 1, true)),
   lidar_fov_publisher_(handle.advertise<geometry_msgs::PolygonStamped>("lidar/fov_visualize", 1, true)),
@@ -96,13 +97,8 @@ void DataVisualization::initMapMarker(void)
 
 void DataVisualization::initTrajectoryMarker(void)
 {
-  trajectory_marker_.type = visualization_msgs::Marker::POINTS;
-  trajectory_marker_.header.frame_id = "map";
-  trajectory_marker_.scale.x = 0.2;
-  trajectory_marker_.scale.y = 0.2;
-  trajectory_marker_.color.r = 1.0f;
-  trajectory_marker_.color.a = 1.0;
-  trajectory_marker_.pose.orientation.w = 1.0;
+  trajectory_pos_marker_.header.frame_id = "map";
+  trajectory_vel_marker_.header.frame_id = "map";
 }
 
 void DataVisualization::initCommandMarkers(const ros::NodeHandle& handle)
@@ -390,19 +386,31 @@ void DataVisualization::mapCallback(const sgtdv_msgs::ConeArr::ConstPtr& msg)
 
 void DataVisualization::trajectoryCallback(const sgtdv_msgs::Trajectory::ConstPtr& msg)
 {
-  trajectory_marker_.points.clear();
-  trajectory_marker_.points.reserve(msg->path.points.size());
-  
-  geometry_msgs::Point trajectory_point;
+  const size_t msg_len = msg->path.points.size();
+  trajectory_pos_marker_.poses.clear();
+  trajectory_pos_marker_.poses.reserve(msg_len);
 
-  for(auto &point : msg->path.points)
+  trajectory_vel_marker_.poses.clear();
+  trajectory_vel_marker_.poses.reserve(msg_len);
+    
+  trajectory_pos_marker_.header.stamp = ros::Time::now();
+  trajectory_vel_marker_.header.stamp = ros::Time::now();
+
+  geometry_msgs::PoseStamped trajectory_point;
+
+  for(size_t i = 0; i < msg_len; i++)
   {
-    trajectory_point.x = point.x;
-    trajectory_point.y = point.y;
-    trajectory_marker_.points.push_back(trajectory_point);
+    trajectory_point.pose.position.x = msg->path.points[i].x;
+    trajectory_point.pose.position.y = msg->path.points[i].y;
+    trajectory_point.pose.position.z = 0.;
+    trajectory_pos_marker_.poses.push_back(trajectory_point);
+
+    trajectory_point.pose.position.z = msg->ref_speed[i];
+    trajectory_vel_marker_.poses.push_back(trajectory_point);
   }
 
-  trajectory_publisher_.publish(trajectory_marker_);
+  trajectory_pos_publisher_.publish(trajectory_pos_marker_);
+  trajectory_vel_publisher_.publish(trajectory_vel_marker_);
 }
 
 void DataVisualization::commandCallback(const sgtdv_msgs::Control::ConstPtr& msg)
